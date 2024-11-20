@@ -1,19 +1,12 @@
 import random
-from constants import *
 
-def generate_city_grid_with_only_bordering_intersections():
+
+def generate_city_grid_with_only_bordering_intersections(width, height, num_buildings, num_emergency_services):
     """
     Generates the city grid randomly. Places a given number of buildings and emergency services,
     and fills the rest of the grid with roads. Buildings are only placed in alternate rows.
     """
-    num_buildings = NUM_BUILDINGS
-    num_emergency_services = NUM_EMERGENCY_SERVICES
-    width = GRID_WIDTH
-    height = GRID_HEIGHT
-
-    print(
-        f"Generating grid with {num_buildings} buildings and {num_emergency_services} emergency services..."
-    )
+    print(f"Generating grid with {num_buildings} buildings and {num_emergency_services} emergency services...")
     total_cells = width * height
     remaining_cells = total_cells - num_buildings - num_emergency_services
 
@@ -25,21 +18,17 @@ def generate_city_grid_with_only_bordering_intersections():
     grid = [[0] * width for _ in range(height)]
 
     # Determine which rows can have buildings (alternate rows: 0, 2, 4, ...)
-    building_rows = [i for i in range(height) if i % 2 != 0]
+    building_rows = [i for i in range(height) if i % 2 == 0]
 
     # Create a pool of possible positions for buildings and emergency services in the allowed rows
     available_positions = [(row, col) for row in building_rows for col in range(width)]
 
     # Check if there are enough positions to place all buildings and emergency services
     if len(available_positions) < num_buildings + num_emergency_services:
-        raise ValueError(
-            "Not enough space to place all buildings and emergency services in alternate rows."
-        )
+        raise ValueError("Not enough space to place all buildings and emergency services in alternate rows.")
 
     # Randomly select positions for buildings and emergency services
-    selected_positions = random.sample(
-        available_positions, num_buildings + num_emergency_services
-    )
+    selected_positions = random.sample(available_positions, num_buildings + num_emergency_services)
 
     # Assign the first 'num_buildings' positions to buildings (1) and the rest to emergency services (2)
     for idx, (row, col) in enumerate(selected_positions):
@@ -55,15 +44,14 @@ def generate_city_grid_with_only_bordering_intersections():
     # Create the new grid with intersections on the borders
     new_grid = [[3] * width]  # Top row of intersections
     for row in grid:
-        new_grid.append(
-            [3] + row + [3]
-        )  # Add intersection columns to the left and right of each row
+        new_grid.append([3] + row + [3])  # Add intersection columns to the left and right of each row
+    
     new_grid.append([3] * width)  # Bottom row of intersections
 
-    print("Grid generated with only intersections in the border:")
+    print("Grid generated:")
     for row in new_grid:
         print(row)
-
+    
     return new_grid
 
 

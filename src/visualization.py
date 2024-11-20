@@ -1,15 +1,14 @@
 import pygame
-from constants import CELL_SIZE
 
-def load_images():
+def load_images(CELL_SIZE=30):
     """
     Loads images for each type of grid element (building, emergency service, etc.).
     Scales the images to fit within the grid cells.
     """
     print("Loading images...")
     images = {
-        1: pygame.image.load('res/building.jpg'),           # Building image (jpeg format)
-        2: pygame.image.load('res/emergency.png')           # Emergency service image (png format)
+        1: pygame.image.load('../res/building.jpg'),           # Building image (jpeg format)
+        2: pygame.image.load('../res/emergency.png')           # Emergency service image (png format)
         # You can add more images for roads and intersections here
     }
     
@@ -20,12 +19,12 @@ def load_images():
     print("Images loaded and scaled.")
     return images
 
-def visualize_city_grid_with_offset_paths(grid, paths):
+def visualize_city_grid_with_offset_paths(grid, paths, CELL_SIZE=30):
     """ 
     Visualizes the grid with buildings, emergency services, and roads using PyGame.
     Also visualizes the shortest paths between buildings and emergency services, each in a unique color with slight offsets for overlapping paths.
     """
-    images = load_images()
+    images = load_images(CELL_SIZE)
     pygame.init()  # Initialize PyGame
     screen = pygame.display.set_mode((len(grid) * CELL_SIZE, len(grid) * CELL_SIZE))  # Set screen size
     pygame.display.set_caption("City Layout with Offset Paths")  # Window title
