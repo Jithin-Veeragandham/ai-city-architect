@@ -1,13 +1,16 @@
 import random
+from constants import *
 
-
-def generate_city_grid_with_only_bordering_intersections(
-    width, height, num_buildings, num_emergency_services
-):
+def generate_city_grid_with_only_bordering_intersections():
     """
     Generates the city grid randomly. Places a given number of buildings and emergency services,
     and fills the rest of the grid with roads. Buildings are only placed in alternate rows.
     """
+    num_buildings = NUM_BUILDINGS
+    num_emergency_services = NUM_EMERGENCY_SERVICES
+    width = GRID_WIDTH
+    height = GRID_HEIGHT
+
     print(
         f"Generating grid with {num_buildings} buildings and {num_emergency_services} emergency services..."
     )
@@ -44,13 +47,6 @@ def generate_city_grid_with_only_bordering_intersections(
             grid[row][col] = 1  # Mark this spot with a building
         else:
             grid[row][col] = 2  # Mark this spot with an emergency service
-
-    # Add intersections in columns randomly where possible
-    # for col in range(width):
-    #     possible_rows = [row for row in range(height) if grid[row][col] == 0]
-    #     if possible_rows:
-    #         selected_row = random.choice(possible_rows)
-    #         grid[selected_row][col] = 3  # Set this cell as an intersection
 
     # Increase the grid size to add borders of intersections
     width += 2
