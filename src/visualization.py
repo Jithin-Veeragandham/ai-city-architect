@@ -1,93 +1,104 @@
 import pygame
 from constants import CELL_SIZE
+from PIL import Image, ImageDraw
+import os
 
-def load_images():
+
+def load_images(cell_size):
     """
     Loads images for each type of grid element (building, emergency service, etc.).
-    Scales the images to fit within the grid cells.
+    Scales the images to fit within the grid cells using Pillow.
     """
     print("Loading images...")
     images = {
-        1: pygame.image.load('res/building.jpg'),           # Building image (jpeg format)
-        2: pygame.image.load('res/emergency.png')           # Emergency service image (png format)
-        # You can add more images for roads and intersections here
+        1: Image.open("res/building.jpg").resize(
+            (cell_size, cell_size)
+        ),  # Building image (JPEG format)
+        2: Image.open("res/emergency.png").resize(
+            (cell_size, cell_size)
+        ),  # Emergency service image (PNG format)
     }
-    
-    # Scale all images to fit into the grid cells
-    for key in images:
-        images[key] = pygame.transform.scale(images[key], (CELL_SIZE, CELL_SIZE))
-    
     print("Images loaded and scaled.")
     return images
 
-def visualize_city_grid_with_offset_paths(grid, paths):
-    """ 
-    Visualizes the grid with buildings, emergency services, and roads using PyGame.
-    Also visualizes the shortest paths between buildings and emergency services, each in a unique color with slight offsets for overlapping paths.
+
+def save_city_grid(grid, paths, dir_name, output_file_name, cell_size=30):
     """
-    images = load_images()
-    pygame.init()  # Initialize PyGame
-    screen = pygame.display.set_mode((len(grid) * CELL_SIZE, len(grid) * CELL_SIZE))  # Set screen size
-    pygame.display.set_caption("City Layout with Offset Paths")  # Window title
+    Visualizes the grid with buildings, emergency services, roads, and paths using Pillow.
+    Draws paths on top of intersections for better visualization.
+    """
+    # Load images
+    images = load_images(cell_size)
 
-    clock = pygame.time.Clock()  # Set up the clock for controlling frame rate
-    running = True  # Game loop control variable
-
-    # Define a list of colors for the paths, avoiding green (the intersection color)
+    # Define colors
+    intersection_color = (52, 251, 152)  # Green
+    road_color = (169, 169, 169)  # Gray
+    road_border_color = (255, 255, 255)  # White
+    border_thickness = 3  # Thickness of the road border
+    
+    # Path colors
     path_colors = [(255, 0, 0), (0, 0, 255), (255, 165, 0), (255, 255, 0), 
                    (0, 255, 255), (255, 0, 255), (128, 0, 128), (0, 128, 128), 
                    (255, 192, 203), (0, 100, 0), (139, 69, 19), (75, 0, 130), 
                    (128, 128, 128), (100, 149, 237), (199, 21, 133)]
+    
+    path_thickness = 6  # Border thickness for paths
+    max_offset = 3  # Maximum offset to avoid overlapping
 
-    path_thickness = 6  # Set the thickness for paths
-    max_offset = 3  # Set maximum offset for paths to avoid overflowing outside the cell
-    road_color = (169, 169, 169)  # Gray for roads
-    road_border_color = (255, 255, 255)  # White for road borders
-    border_thickness = 3  # Thickness of the white border
+    # Image dimensions
+    grid_size = len(grid)
+    image_size = (grid_size * cell_size, grid_size * cell_size)
 
-    while running:
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:  # Quit the game if the close button is pressed
-                running = False
+    # Create a blank image and drawing object
+    img = Image.new("RGB", image_size, (128, 128, 128))  # Gray background
+    draw = ImageDraw.Draw(img)
 
-        screen.fill((128, 128, 128))  # Gray background
+    # Draw the grid elements (roads, intersections, buildings, emergency services)
+    for y in range(grid_size):
+        for x in range(grid_size):
+            top_left = (x * cell_size, y * cell_size)
+            bottom_right = (top_left[0] + cell_size, top_left[1] + cell_size)
+            
+            if grid[y][x] == 3:  # Intersection
+                draw.rectangle([top_left, bottom_right], fill=intersection_color)
+            elif grid[y][x] == 0:  # Road
+                # Draw road border
+                draw.rectangle([top_left, bottom_right], fill=road_border_color)
+                # Draw inner road
+                inner_top_left = (top_left[0] + border_thickness, top_left[1] + border_thickness)
+                inner_bottom_right = (bottom_right[0] - border_thickness, bottom_right[1] - border_thickness)
+                draw.rectangle([inner_top_left, inner_bottom_right], fill=road_color)
+            elif grid[y][x] in images:  # Buildings or emergency services
+                # Paste the corresponding image
+                img.paste(images[grid[y][x]], top_left)
 
-        # Draw the grid using images (building, emergency services, etc.)
-        for y in range(len(grid)):
-            for x in range(len(grid)):
-                cell_value = grid[y][x]
-                if cell_value in images:  # If the cell has a corresponding image (building or emergency)
-                    screen.blit(images[cell_value], (x * CELL_SIZE, y * CELL_SIZE))  # Draw the image
-                elif cell_value == 3:  # If the cell is an intersection
-                    pygame.draw.rect(screen, (52, 251, 152), (x * CELL_SIZE, y * CELL_SIZE, CELL_SIZE, CELL_SIZE))  # Draw intersections in green
-                elif cell_value == 0:  # Draw roads with a border
-                    # Draw the white border for the road
-                    pygame.draw.rect(screen, road_border_color, (x * CELL_SIZE, y * CELL_SIZE, CELL_SIZE, CELL_SIZE))
-                    # Draw the inner part of the road (smaller than the cell to show the border)
-                    pygame.draw.rect(screen, road_color, 
-                                     (x * CELL_SIZE + border_thickness, 
-                                      y * CELL_SIZE + border_thickness, 
-                                      CELL_SIZE - 2 * border_thickness, 
-                                      CELL_SIZE - 2 * border_thickness))
+    # Draw the paths (on top of all grid elements)
+    for i, path in enumerate(paths):
+        path_color = path_colors[i % len(path_colors)]  # Cycle through colors
+        for (coord, direction) in path:
+            x, y = coord
+            # Calculate the offset to differentiate overlapping paths
+            offset_x = (i % max_offset) * 2  # Offset in x-direction
+            offset_y = (i % max_offset) * 2  # Offset in y-direction
 
-        # Draw the paths in different colors with slight offsets for overlapping paths
-        for i, path in enumerate(paths):
-            path_color = path_colors[i % len(path_colors)]  # Cycle through colors if there are more paths than colors
-            for (coord, direction) in path:
-                x,y=coord
-                if grid[y][x] != 1 and grid[y][x] != 2:  # Only color if it's a road (0), to avoid coloring buildings, emergency services, or intersections
-                    # Calculate the offset based on the index of the path to avoid overlap
-                    offset_x = (i % max_offset) * 2  # Offset in x-direction
-                    offset_y = (i % max_offset) * 2  # Offset in y-direction
-                    
-                    # Ensure the rectangle fits within the cell and apply a small offset
-                    pygame.draw.rect(
-                        screen, 
-                        path_color, 
-                        (x * CELL_SIZE + offset_x, y * CELL_SIZE + offset_y, CELL_SIZE - max_offset, CELL_SIZE - max_offset),
-                        path_thickness
-                    )
+            # Define the rectangle's corners for the hollow square
+            path_top_left = (x * cell_size + offset_x, y * cell_size + offset_y)
+            path_bottom_right = (
+                path_top_left[0] + cell_size - max_offset,
+                path_top_left[1] + cell_size - max_offset,
+            )
+            
+            # Draw a hollow square (thick border only) for the path
+            draw.rectangle(
+                [path_top_left, path_bottom_right],
+                outline=path_color,  # Border color
+                width=path_thickness  # Border thickness
+            )
 
-        pygame.display.flip()  # Update the display
-        clock.tick(30)  # Control the frame rate (30 FPS)
-    pygame.quit()  # Properly shut down PyGame
+    # Ensure the output directory exists
+    os.makedirs(dir_name, exist_ok=True)
+
+    # Save the image
+    full_path = os.path.join(dir_name, output_file_name)
+    img.save(full_path)
+    print(f"City grid visualization saved as {full_path}")

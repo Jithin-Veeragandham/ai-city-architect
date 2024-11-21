@@ -2,3 +2,4 @@ src/__pycache__/
 .DS_Store
 Untitled.ipynb
 .ipynb_checkpoints/Untitled-checkpoint.ipynb
+res/
