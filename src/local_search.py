@@ -70,7 +70,7 @@ def generate_neighbor(grid):
 
     if not empty_cells:
         return new_grid  # No valid moves
-
+  
     # Move the intersection to a random empty cell
     new_y, new_x = random.choice(empty_cells)
     new_grid[y][x] = 0  # Remove from the current position
