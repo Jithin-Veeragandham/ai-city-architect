@@ -1,5 +1,4 @@
-import pygame
-from constants import CELL_SIZE
+from grid_constants import CELL_SIZE
 from PIL import Image, ImageDraw
 import os
 

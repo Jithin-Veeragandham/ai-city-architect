@@ -1,5 +1,5 @@
 import random
-from constants import *
+from grid_constants import *
 
 def generate_city_grid_with_only_bordering_intersections():
     """

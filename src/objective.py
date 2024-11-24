@@ -1,4 +1,4 @@
-from constants import PATH_PENALTY, INTERSECTION_PENALTY
+from grid_constants import PATH_PENALTY, INTERSECTION_PENALTY
 
 def calculate_fitness(grid, shortest_paths):
     fitness_scores = {}

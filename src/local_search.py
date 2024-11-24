@@ -7,7 +7,7 @@ import os
 from datetime import datetime
 import copy
 
-def hill_climbing():
+def hill_climbing(max_iterations=200):
 
     initial_grid = generate_city_grid_with_only_bordering_intersections()
     initial_grid_with_intersections  = place_intersections_in_every_column_randomly(initial_grid)
@@ -17,11 +17,11 @@ def hill_climbing():
     current_score = sum(initial_fitness_scores.values()) / len(initial_fitness_scores)
     print(f"Initial fitness scores: {initial_fitness_scores}")
 
-    dir_path = os.path.join(os.getcwd(),"project py files\\ai-city-architect\\res","hill_climbing_"+datetime.now().strftime("%Y-%m-%d_%H-%M-%S"))
+    dir_path = os.path.join(os.getcwd(), "res","hill_climbing_"+datetime.now().strftime("%Y-%m-%d_%H-%M-%S"))
     os.mkdir(dir_path)
     save_city_grid(initial_grid_with_intersections, current_paths, dir_path, "hill_climbing_initial.png")
 
-    for _ in range(HILL_CLIMBING_MAX_ITERATIONS):
+    for _ in range(max_iterations):
         print(f"Iteration {_}")
         new_grid = generate_neighbor(current_grid)
         new_paths = find_all_shortest_paths(new_grid)
