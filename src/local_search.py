@@ -50,8 +50,8 @@ def generate_neighbor(grid):
 
     # Find all intersections
     intersections = [
-        (y, x) for y in range(len(new_grid)) 
-               for x in range(len(new_grid[0])) 
+        (y, x) for y in range(1,len(new_grid)-1) 
+               for x in range(1,len(new_grid[0])-1) 
                if new_grid[y][x] == 3
     ]
 
