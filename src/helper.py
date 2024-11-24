@@ -16,6 +16,8 @@ def get_neighbors(grid, node):
     if grid[y][x] == 3:
         # Allowed all directions for grid cell with value 3
         allowed_directions = ["up", "down", "left", "right"]
+    elif (y%2 == 0) and prev_direction in ["up", "down"]:
+        allowed_directions = [prev_direction]
     elif prev_direction is None:
         # Starting position, can move only up or down
         allowed_directions = ["up", "down"]

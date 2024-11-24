@@ -17,7 +17,7 @@ def hill_climbing(max_iterations=200):
     current_score = sum(initial_fitness_scores.values()) / len(initial_fitness_scores)
     print(f"Initial fitness scores: {initial_fitness_scores}")
 
-    dir_path = os.path.join(os.getcwd(), "res","hill_climbing_"+datetime.now().strftime("%Y-%m-%d_%H-%M-%S"))
+    dir_path = os.path.join(os.getcwd(), "project py files\\ai-city-architect\\res","hill_climbing_"+datetime.now().strftime("%Y-%m-%d_%H-%M-%S"))
     os.mkdir(dir_path)
     save_city_grid(initial_grid_with_intersections, current_paths, dir_path, "hill_climbing_initial.png")
 

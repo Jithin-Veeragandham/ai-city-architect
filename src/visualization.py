@@ -10,10 +10,10 @@ def load_images(cell_size):
     """
     print("Loading images...")
     images = {
-        1: Image.open("res/building.jpg").resize(
+        1: Image.open("project py files\\ai-city-architect\\res\\building.jpg").resize(
             (cell_size, cell_size)
         ),  # Building image (JPEG format)
-        2: Image.open("res/emergency.png").resize(
+        2: Image.open("project py files\\ai-city-architect\\res\\emergency.png").resize(
             (cell_size, cell_size)
         ),  # Emergency service image (PNG format)
     }
