@@ -53,7 +53,7 @@ def a_star(grid, start, goal):
                 heapq.heappush(open_list, (f_cost, neighbor))
 
     # If no path found
-    print(reconstruct_path(came_from, current_node))
+    # print(reconstruct_path(came_from, current_node))
     return None
 
 def reconstruct_path(came_from, current_node):
@@ -73,7 +73,7 @@ def a_star_multiple_goals(grid, start):
             if grid[y][x] == 2:  # Emergency service marked as 2
                 emergencies.append(((x, y), None))  # Add as (coordinates, direction)
 
-    print(f"Found {len(emergencies)} emergency services.")
+    # print(f"Found {len(emergencies)} emergency services.")
 
     shortest_path = None
     shortest_length = float('inf')
@@ -86,10 +86,10 @@ def a_star_multiple_goals(grid, start):
             shortest_length = len(path)
 
     # Return the shortest path found, if any
-    if shortest_path:
-        print(f"Shortest path to an emergency service: {shortest_path} with length {shortest_length}")
-    else:
-        print("No path found to any emergency service.")
+    # if shortest_path:
+    #     print(f"Shortest path to an emergency service: {shortest_path} with length {shortest_length}")
+    # else:
+    #     print("No path found to any emergency service.")
     
     return shortest_path
 
@@ -108,11 +108,11 @@ def find_all_shortest_paths(grid):
             if grid[y][x] == 1:  # Building marked as 1
                 buildings.append((x, y))
 
-    print(f"Found {len(buildings)} buildings.")
+    # print(f"Found {len(buildings)} buildings.")
 
     # Step 2: For each building, use BFS to find the shortest path to the nearest emergency service
     for building in buildings:
-        print(f"Calculating shortest path for building at {building}...")
+        # print(f"Calculating shortest path for building at {building}...")
         shortest_path = a_star_multiple_goals(grid, (building,None))  # Use BFS to get shortest path for the building
         if shortest_path:
             shortest_paths.append(shortest_path)  # Add the path to the list if found
