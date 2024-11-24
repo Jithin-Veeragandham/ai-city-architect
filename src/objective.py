@@ -16,8 +16,10 @@ def calculate_fitness(grid, shortest_paths):
                     if grid[y][x] == 3:  # Check if the cell value is 3
                         intersection_count += 1
 
+        path_penalty = 1
+        intersection_penalty = 1
         # Fitness calculation for the current path
-        fitness = PATH_PENALTY * path_length + INTERSECTION_PENALTY * intersection_count
+        fitness = path_penalty * path_length + intersection_penalty * intersection_count
         fitness_scores[i] = fitness
 
     return fitness_scores
