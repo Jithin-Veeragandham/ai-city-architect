@@ -1,6 +1,20 @@
 import heapq
 from helper import *
+
+
 def get_neighbors(grid, node):
+    """
+    Given a grid and the current node, determines the valid neighboring nodes
+    that can be moved to based on the grid's constraints and the direction of
+    movement from the previous step.
+    
+    Parameters:
+        grid (list[list[int]]): The 2D grid representing the environment.
+        node (tuple): The current node as ((x, y), direction).
+        
+    Returns:
+        list[tuple]: A list of neighboring nodes with their respective directions.
+    """
     current, prev_direction = node
     x, y = current
     neighbors = []
@@ -41,7 +55,21 @@ def get_neighbors(grid, node):
             neighbors.append(((new_x, new_y), direction))
     return neighbors
 
+
 def a_star(grid, start, goal):
+    """
+    Implements the A* algorithm to find the shortest path from a start node to a goal node.
+    Considers movement costs and heuristic estimates (Manhattan distance) for optimal pathfinding.
+    
+    Parameters:
+        grid (list[list[int]]): The 2D grid representing the environment.
+        start (tuple): The starting node as ((x, y), direction).
+        goal (tuple): The goal node as ((x, y), direction).
+        
+    Returns:
+        list[tuple]: A list of nodes representing the shortest path from start to goal.
+                     Returns None if no path is found.
+    """
     # Initialize open and closed lists
 
     open_list = []
@@ -99,7 +127,19 @@ def a_star(grid, start, goal):
     # print(reconstruct_path(came_from, current_node))
     return None
 
+
 def reconstruct_path(came_from, current_node):
+    """
+    Reconstructs the shortest path from the start node to the goal node
+    using the dictionary of parent nodes.
+    
+    Parameters:
+        came_from (dict): A dictionary mapping nodes to their parents.
+        current_node (tuple): The goal node to start the reconstruction from.
+        
+    Returns:
+        list[tuple]: The reconstructed path as a list of nodes from start to goal.
+    """
     path = [current_node]
     while current_node in came_from:
         current_node = came_from[current_node]
@@ -109,6 +149,17 @@ def reconstruct_path(came_from, current_node):
 
 
 def a_star_multiple_goals(grid, start):
+    """
+    Finds the shortest path from the start node to the nearest goal among multiple possible goals.
+    Uses the A* algorithm to calculate paths to each goal and selects the shortest one.
+    
+    Parameters:
+        grid (list[list[int]]): The 2D grid representing the environment.
+        start (tuple): The starting node as ((x, y), direction).
+        
+    Returns:
+        list[tuple]: The shortest path to the nearest goal. Returns None if no path is found.
+    """
     # Identify all emergency services (goals)
     emergencies = []
     for y in range(len(grid)):
@@ -139,8 +190,14 @@ def a_star_multiple_goals(grid, start):
 
 def find_all_shortest_paths(grid):
     """
-    Finds the shortest path from each building to the nearest emergency service.
-    Returns an array of shortest paths for each building.
+    Finds the shortest path from each building in the grid to the nearest emergency service.
+    Uses A* with multiple goals to calculate paths for each building.
+    
+    Parameters:
+        grid (list[list[int]]): The 2D grid representing the environment.
+        
+    Returns:
+        list[list[tuple]]: An array of shortest paths for each building. Each path is a list of nodes.
     """
     buildings = []  # Array to store building positions
     shortest_paths = []  # Array to store the shortest paths for each building

@@ -1,19 +1,25 @@
-from grid_constants import CELL_SIZE
 from PIL import Image, ImageDraw
 import os
 
 
 def load_images(cell_size):
     """
-    Loads images for each type of grid element (building, emergency service, etc.).
-    Scales the images to fit within the grid cells using Pillow.
+    Loads and resizes images representing grid elements (e.g., buildings, emergency services).
+    Uses Pillow to open images and scale them to fit the specified cell size.
+
+    Parameters:
+        cell_size (int): The size of each grid cell in pixels.
+
+    Returns:
+        dict: A dictionary mapping grid element values (e.g., 1 for building, 2 for emergency service)
+              to their corresponding resized Pillow Image objects.
     """
     # print("Loading images...")
     images = {
-        1: Image.open("project py files\\ai-city-architect\\res\\building.jpg").resize(
+        1: Image.open(rf"/Users/shreycshah/Desktop/Coursework/Fall24/CS5100/Project/UrbanAItect/res//building.jpg").resize(
             (cell_size, cell_size)
         ),  # Building image (JPEG format)
-        2: Image.open("project py files\\ai-city-architect\\res\\emergency.png").resize(
+        2: Image.open(rf"/Users/shreycshah/Desktop/Coursework/Fall24/CS5100/Project/UrbanAItect/res//emergency.png").resize(
             (cell_size, cell_size)
         ),  # Emergency service image (PNG format)
     }
@@ -23,10 +29,29 @@ def load_images(cell_size):
 
 def save_city_grid(grid, paths, dir_name, output_file_name):
     """
-    Visualizes the grid with buildings, emergency services, roads, and paths using Pillow.
-    Draws paths on top of intersections for better visualization.
+    Visualizes a city grid and its shortest paths using Pillow and saves the visualization as an image.
+
+    Steps:
+    1. Loads images for buildings and emergency services.
+    2. Draws roads, intersections, and grid elements (buildings and emergency services) onto the image.
+    3. Draws paths on top of the grid, differentiating them with colors and offsets to avoid overlap.
+    4. Saves the final visualization to the specified directory and file name.
+
+    Parameters:
+        grid (list[list[int]]): The 2D grid representing the city. 
+                                - 0: Roads
+                                - 1: Buildings
+                                - 2: Emergency services
+                                - 3: Intersections
+        paths (list[list[tuple]]): List of shortest paths, where each path is a list of nodes (coordinates and directions).
+        dir_name (str): Directory where the image should be saved.
+        output_file_name (str): Name of the output image file.
+
+    Returns:
+        None
     """
     # Load images
+    CELL_SIZE = 80
     images = load_images(CELL_SIZE)
 
     # Define colors

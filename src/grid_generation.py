@@ -1,10 +1,29 @@
 import random
 from grid_constants import *
 
+
 def generate_city_grid_with_only_bordering_intersections():
     """
-    Generates the city grid randomly. Places a given number of buildings and emergency services,
-    and fills the rest of the grid with roads. Buildings are only placed in alternate rows.
+    Generates a city grid with buildings, emergency services, roads, and intersections.
+    Buildings are placed only in alternate rows, and intersections are added as a border around the grid.
+    
+    Steps:
+    1. Initializes the grid with roads (0) as placeholders.
+    2. Randomly places buildings (1) and emergency services (2) in alternate rows.
+    3. Expands the grid to include a border of intersections (3) on all sides.
+
+    Parameters:
+        None (Relies on constants: NUM_BUILDINGS, NUM_EMERGENCY_SERVICES, GRID_WIDTH, GRID_HEIGHT)
+
+    Returns:
+        list[list[int]]: A 2D grid where:
+                         - 0 represents roads,
+                         - 1 represents buildings,
+                         - 2 represents emergency services,
+                         - 3 represents intersections.
+    Raises:
+        ValueError: If the number of buildings and emergency services exceeds available positions
+                    or if the grid size is insufficient for the required elements.
     """
     num_buildings = NUM_BUILDINGS
     num_emergency_services = NUM_EMERGENCY_SERVICES
@@ -69,7 +88,18 @@ def generate_city_grid_with_only_bordering_intersections():
 
 def place_intersections_in_every_column_randomly(grid):
     """
-    Places intersections (3) in every column of the grid where the cell is empty (0).
+    Randomly places intersections (3) in each column of the grid wherever there is an empty cell (0).
+
+    Steps:
+    1. Iterates over all columns in the grid.
+    2. Identifies rows in each column that have empty cells (0).
+    3. Randomly selects one empty cell in the column to place an intersection (3), if possible.
+
+    Parameters:
+        grid (list[list[int]]): A 2D grid representing the city.
+
+    Returns:
+        list[list[int]]: A modified 2D grid with intersections placed randomly in every column.
     """
     for col in range(len(grid[0])):  # Iterate over each column
         # Find rows in the current column that are empty (0)
