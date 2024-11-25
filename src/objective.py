@@ -15,9 +15,9 @@ def calculate_fitness(grid, shortest_paths):
                         intersection_count += 1
 
         path_penalty = 1
-        intersection_penalty = 1
+        intersection_penalty = len(grid) // 8
         # Fitness calculation for the current path
         fitness = path_penalty * path_length + intersection_penalty * intersection_count
-        fitness_scores[i] = fitness
+        fitness_scores[path[0][0]] = fitness
 
     return fitness_scores

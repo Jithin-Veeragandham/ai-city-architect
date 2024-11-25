@@ -1,44 +1,5 @@
 
-def get_neighbors(grid, node):
-    current, prev_direction = node
-    x, y = current
-    neighbors = []
 
-    # Define possible moves
-    directions = {
-        "up": (0, -1),
-        "down": (0, 1),
-        "left": (-1, -0),
-        "right": (1, 0)
-    }
-
-    # Check the cell value at the current position
-    if grid[y][x] == 3:
-        # Allowed all directions for grid cell with value 3
-        allowed_directions = ["up", "down", "left", "right"]
-    elif (y%2 == 0) and prev_direction in ["up", "down"]:
-        allowed_directions = [prev_direction]
-    elif prev_direction is None:
-        # Starting position, can move only up or down
-        allowed_directions = ["up", "down"]
-    elif prev_direction in ["up", "right"]:
-        # Previous direction was up or right, can only move right
-        allowed_directions = ["right"]
-    elif prev_direction in ["down", "left"]:
-        # Previous direction was down or left, can only move left
-        allowed_directions = ["left"]
-    else:
-        allowed_directions = []  # default empty list if no directions are allowed
-
-    # Calculate neighbors based on allowed directions
-    for direction in allowed_directions:
-        dx, dy = directions[direction]
-        new_x, new_y = x + dx, y + dy
-
-        # Ensure new coordinates are within grid bounds
-        if 0 <= new_x < len(grid[0]) and 0 <= new_y < len(grid):
-            neighbors.append(((new_x, new_y), direction))
-    return neighbors
 
 def manhattan_distance(node1, node2):
     # Extract coordinates from each node
@@ -50,3 +11,21 @@ def manhattan_distance(node1, node2):
 def is_intersection_and_above_below(current,grid,goal):
    return (grid[current[1]][current[0]]==3  and 
            ((current[1] == goal[1] - 1) or (current[1] == goal[1] + 1)))
+
+def is_cell_in_margins(grid, cell):
+    """
+    Determines if a cell is in the margins (edges) of the grid.
+
+    Args:
+        grid (list of list of int): The grid as a 2D list.
+        cell (tuple): The cell to check, represented as (row, column).
+
+    Returns:
+        bool: True if the cell is in the margins, False otherwise.
+    """
+    rows = len(grid)
+    cols = len(grid[0])
+    row, col = cell
+
+    # Check if the cell is in the margins
+    return row == 0 or row == rows - 1 or col == 0 or col == cols - 1

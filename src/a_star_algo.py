@@ -1,5 +1,45 @@
 import heapq
 from helper import *
+def get_neighbors(grid, node):
+    current, prev_direction = node
+    x, y = current
+    neighbors = []
+
+    # Define possible moves
+    directions = {
+        "up": (0, -1),
+        "down": (0, 1),
+        "left": (-1, -0),
+        "right": (1, 0)
+    }
+
+    # Check the cell value at the current position
+    if grid[y][x] == 3:
+        # Allowed all directions for grid cell with value 3
+        allowed_directions = ["up", "down", "left", "right"]
+    elif ((y%2 == 0) and prev_direction in ["up", "down"]) and (grid[y][x] in [0 , 3]) :
+        allowed_directions = [prev_direction]
+    elif prev_direction is None:
+        # Starting position, can move only up or down
+        allowed_directions = ["up", "down"]
+    elif prev_direction in ["up", "right"]:
+        # Previous direction was up or right, can only move right
+        allowed_directions = ["right"]
+    elif prev_direction in ["down", "left"]:
+        # Previous direction was down or left, can only move left
+        allowed_directions = ["left"]
+    else:
+        allowed_directions = []  # default empty list if no directions are allowed
+
+    # Calculate neighbors based on allowed directions
+    for direction in allowed_directions:
+        dx, dy = directions[direction]
+        new_x, new_y = x + dx, y + dy
+
+        # Ensure new coordinates are within grid bounds
+        if 0 <= new_x < len(grid[0]) and 0 <= new_y < len(grid):
+            neighbors.append(((new_x, new_y), direction))
+    return neighbors
 
 def a_star(grid, start, goal):
     # Initialize open and closed lists
@@ -40,8 +80,11 @@ def a_star(grid, start, goal):
         for neighbor in neighbors:
             if neighbor in closed_list:
                 continue
-
-            tentative_g_cost = g_costs[current_node] + 1
+            if (grid[current[1]][current[0]] == 3) and is_cell_in_margins(grid,current):
+                cell_cost = len(grid)//8
+            else:
+                cell_cost = 1
+            tentative_g_cost = g_costs[current_node] + cell_cost
 
             if neighbor not in g_costs or tentative_g_cost < g_costs[neighbor]:
                 # Update costs and add to open list

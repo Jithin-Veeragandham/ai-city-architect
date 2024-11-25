@@ -15,7 +15,6 @@ def hill_climbing(max_iterations=200):
     current_paths = find_all_shortest_paths(current_grid)
     initial_fitness_scores = calculate_fitness(current_grid, current_paths)
     current_score = sum(initial_fitness_scores.values()) / len(initial_fitness_scores)
-    print(f"Initial fitness scores: {initial_fitness_scores}")
 
     dir_path = os.path.join(os.getcwd(), "project py files\\ai-city-architect\\res","hill_climbing_"+datetime.now().strftime("%Y-%m-%d_%H-%M-%S"))
     os.mkdir(dir_path)
@@ -26,54 +25,142 @@ def hill_climbing(max_iterations=200):
         new_grid = generate_neighbor(current_grid)
         new_paths = find_all_shortest_paths(new_grid)
         fitness_scores = calculate_fitness(new_grid, new_paths)
+        new_grid = best_path_retention(current_grid, new_grid, current_paths, new_paths)
+        new_paths = find_all_shortest_paths(new_grid)
+        fitness_scores = calculate_fitness(new_grid, new_paths)
+
         new_score = sum(fitness_scores.values()) / len(initial_fitness_scores)
 
         # If the new configuration is better, accept it
         if new_score < current_score:
-            print(f"Accepted new configuration with score {new_score}")
+            print(f"Accepted new configuration with score {new_score} at iteration {_}")
+
             current_grid = new_grid
             current_score = new_score
             current_paths = new_paths
-            save_city_grid(new_grid, new_paths, dir_path, f"hill_climbing_iter{_}_accepted.png")
+            save_city_grid(new_grid, new_paths, dir_path, f"iter{_}_cost_{current_score}.png")
 
         # Optionally print progress
-        print(f"Iteration {_}: Current Score = {current_score}")
+        # print(f"Iteration {_}: Current Score = {current_score}")
 
     return current_grid, current_paths
-
 def generate_neighbor(grid):
     """
-    Generates a new grid configuration by randomly moving an intersection.
+    Generates a new grid configuration by randomly moving an intersection
+    and ensuring the total number of intersections is len(grid) + 1.
     """
     import random
+    import copy
+
     new_grid = copy.deepcopy(grid)
+    target_intersections = len(new_grid) + 1
 
     # Find all intersections
     intersections = [
-        (y, x) for y in range(1,len(new_grid)-1) 
-               for x in range(1,len(new_grid[0])-1) 
+        (y, x) for y in range(1, len(new_grid) - 1)
+               for x in range(1, len(new_grid[0]) - 1)
                if new_grid[y][x] == 3
     ]
 
-    if not intersections:
-        return new_grid  # No intersections to move
+    if intersections:
+        # Randomly select an intersection to move
+        y, x = random.choice(intersections)
 
-    # Randomly select an intersection to move
-    y, x = random.choice(intersections)
+        # Find empty cells (0) to move to
+        empty_cells = [
+            (new_y, new_x) for new_y in range(1, len(new_grid) - 1)
+                           for new_x in range(1, len(new_grid[0]) - 1)
+                           if (new_grid[new_y][new_x] == 0 and
+                               new_y % 2 != 0)  # Satisfies y % 2 != 0
+        ]
 
-    # Find empty cells (0) to move to
-    empty_cells = [
-        (new_y, new_x) for new_y in range(len(new_grid)) 
-                       for new_x in range(len(new_grid[0])) 
-                       if new_grid[new_y][new_x] == 0
+        if empty_cells:
+            # Move the intersection to a random empty cell
+            new_y, new_x = random.choice(empty_cells)
+            new_grid[y][x] = 0  # Remove from the current position
+            new_grid[new_y][new_x] = 3  # Place at the new position
+
+    # Recalculate the number of intersections
+    intersections = [
+        (y, x) for y in range(1, len(new_grid) - 1)
+               for x in range(1, len(new_grid[0]) - 1)
+               if new_grid[y][x] == 3
     ]
 
-    if not empty_cells:
-        return new_grid  # No valid moves
-  
-    # Move the intersection to a random empty cell
-    new_y, new_x = random.choice(empty_cells)
-    new_grid[y][x] = 0  # Remove from the current position
-    new_grid[new_y][new_x] = 3  # Place at the new position
+    current_intersections = len(intersections)
+
+    # Add intersections if needed
+    if current_intersections < target_intersections:
+        empty_cells = [
+            (new_y, new_x) for new_y in range(1, len(new_grid) - 1)
+                           for new_x in range(1, len(new_grid[0]) - 1)
+                           if new_grid[new_y][new_x] == 0
+        ]
+        while current_intersections < target_intersections and empty_cells:
+            new_y, new_x = random.choice(empty_cells)
+            new_grid[new_y][new_x] = 3
+            empty_cells.remove((new_y, new_x))
+            current_intersections += 1
+
+    # Remove intersections if needed
+    elif current_intersections > target_intersections:
+        while current_intersections > target_intersections:
+            y, x = random.choice(intersections)
+            new_grid[y][x] = 0
+            intersections.remove((y, x))
+            current_intersections -= 1
 
     return new_grid
+
+from copy import deepcopy
+
+def best_path_retention(grid, new_grid, paths, new_paths):
+    """
+    Retains the best path configuration between the current and new grids.
+    Merges the best paths into a new grid, retaining only intersections from selected paths.
+    """
+    # Initialize merged grid as a deep copy of the old grid
+    old_paths_dict= {}
+    for path in paths:
+        old_paths_dict[path[0][0]] = path
+    new_paths_dict = {}
+    for path in new_paths:
+        new_paths_dict[path[0][0]] = path
+    merged_grid = deepcopy(grid)
+    for i in range(1,len(merged_grid)-1):
+        for j in range(1,len(merged_grid[0])-1):
+            if merged_grid[i][j] == 3:
+                merged_grid[i][j] = 0
+    # Replace all 3s in merged grid with 0s
+
+    current_fitness_scores = calculate_fitness(grid, paths)
+    new_fitness_scores = calculate_fitness(new_grid, new_paths)
+    # print('current_fitness_scores:', current_fitness_scores)
+    # print('new_fitness_scores:', new_fitness_scores)
+    
+    # Dictionary to store selected paths and grids
+    selected_config = {}
+
+    # Iterate through each building in old_paths_dict
+    for building, old_path in old_paths_dict.items():
+        # Get the corresponding new path
+        new_path = new_paths_dict.get(building, None)
+        
+        # Calculate fitness for old and new paths
+        old_fitness = current_fitness_scores.get(building, float('inf'))
+        new_fitness = new_fitness_scores.get(building, float('inf'))
+        
+        # Compare fitness scores and update the selected configuration
+        if old_fitness <= new_fitness:
+            selected_config[building] = (grid, old_path)
+        else:
+            selected_config[building] = (new_grid, new_path)
+    # print(selected_config)
+    for building, (selected_grid, selected_path) in selected_config.items():
+        for step in selected_path:
+            coord, _ = step  # Each step is ((x, y), 'direction')
+            x, y = coord
+            # Use the value from the selected grid at the given coordinate
+            merged_grid[x][y] = selected_grid[x][y]
+  
+    return merged_grid
