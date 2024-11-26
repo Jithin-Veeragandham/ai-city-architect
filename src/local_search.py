@@ -1,6 +1,4 @@
-from grid_generation import *
 from a_star_algo import *
-from grid_generation import *
 from objective import calculate_fitness
 from visualization import save_city_grid
 import os
@@ -10,25 +8,23 @@ from datetime import datetime
 from copy import deepcopy
 
 
-def hill_climbing(max_iterations=200):
+def hill_climbing(grid, max_iterations=200):
     """
     Implements the hill climbing algorithm to optimize the placement of intersections in a city grid.
 
     Steps:
-    1. Generates an initial grid with intersections and calculates the initial fitness score.
-    2. Iteratively generates neighboring configurations and evaluates their fitness scores.
-    3. Accepts a new configuration if it improves the fitness score.
-    4. Saves the grid visualization at each step for progress tracking.
+    1. Iteratively generates neighboring configurations and evaluates their fitness scores.
+    2. Accepts a new configuration if it improves the fitness score.
+    3. Saves the grid visualization at each step for progress tracking.
 
     Parameters:
+        grid (list[list[int]]): The initial city grid with intersections.
         max_iterations (int): Maximum number of iterations for the algorithm.
 
     Returns:
         tuple: The optimized grid and the corresponding paths after hill climbing.
     """
-    initial_grid = generate_city_grid_with_only_bordering_intersections()
-    initial_grid_with_intersections  = place_intersections_in_every_column_randomly(initial_grid)
-    current_grid = copy.deepcopy(initial_grid_with_intersections)
+    current_grid = copy.deepcopy(grid)
     current_paths = find_all_shortest_paths(current_grid)
     initial_fitness_scores = calculate_fitness(current_grid, current_paths)
     current_score = sum(initial_fitness_scores.values()) / len(initial_fitness_scores)
@@ -36,7 +32,7 @@ def hill_climbing(max_iterations=200):
     dir_path = os.path.join(rf"/Users/shreycshah/Desktop/Coursework/Fall24/CS5100/Project/UrbanAItect/res",
                             datetime.now().strftime("%Y-%m-%d_%H-%M-%S"))
     os.mkdir(dir_path)
-    save_city_grid(initial_grid_with_intersections, current_paths, dir_path, "hill_climbing_initial.png")
+    save_city_grid(grid, current_paths, dir_path, "hill_climbing_initial.png")
 
     for _ in range(max_iterations):
         print(f"Iteration {_}")
