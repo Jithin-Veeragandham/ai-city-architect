@@ -27,10 +27,9 @@ def hill_climbing(grid, max_iterations=200):
     current_grid = copy.deepcopy(grid)
     current_paths = find_all_shortest_paths(current_grid)
     initial_fitness_scores = calculate_fitness(current_grid, current_paths)
-    current_score = sum(initial_fitness_scores.values()) / \
-        len(initial_fitness_scores)
+    current_score = sum(initial_fitness_scores.values()) / len(initial_fitness_scores)
 
-    dir_path = os.path.join(rf"D:\NEU MS CS\FAI\Project\ai-city-architect\res",
+    dir_path = os.path.join(rf"/Users/shreycshah/Desktop/Coursework/Fall24/CS5100/Project/UrbanAItect/res",
                             datetime.now().strftime("%Y-%m-%d_%H-%M-%S"))
     os.mkdir(dir_path)
     save_city_grid(grid, current_paths, dir_path, "hill_climbing_initial.png")
@@ -40,8 +39,7 @@ def hill_climbing(grid, max_iterations=200):
         new_grid = generate_neighbor(current_grid)
         new_paths = find_all_shortest_paths(new_grid)
         fitness_scores = calculate_fitness(new_grid, new_paths)
-        new_grid = best_path_retention(
-            current_grid, new_grid, current_paths, new_paths)
+        new_grid = best_path_retention(current_grid, new_grid, current_paths, new_paths)
         new_paths = find_all_shortest_paths(new_grid)
         fitness_scores = calculate_fitness(new_grid, new_paths)
 
@@ -49,14 +47,12 @@ def hill_climbing(grid, max_iterations=200):
 
         # If the new configuration is better, accept it
         if new_score < current_score:
-            print(
-                f"Accepted new configuration with score {new_score} at iteration {_}")
+            print(f"Accepted new configuration with score {new_score} at iteration {_}")
 
             current_grid = new_grid
             current_score = new_score
             current_paths = new_paths
-            save_city_grid(new_grid, new_paths, dir_path,
-                           f"iter{_}_cost_{current_score}.png")
+            save_city_grid(new_grid, new_paths, dir_path, f"iter{_}_cost_{current_score}.png")
 
         # Optionally print progress
         # print(f"Iteration {_}: Current Score = {current_score}")
@@ -86,8 +82,8 @@ def generate_neighbor(grid):
     # Find all intersections
     intersections = [
         (y, x) for y in range(1, len(new_grid) - 1)
-        for x in range(1, len(new_grid[0]) - 1)
-        if new_grid[y][x] == 3
+               for x in range(1, len(new_grid[0]) - 1)
+               if new_grid[y][x] == 3
     ]
 
     if intersections:
@@ -97,9 +93,9 @@ def generate_neighbor(grid):
         # Find empty cells (0) to move to
         empty_cells = [
             (new_y, new_x) for new_y in range(1, len(new_grid) - 1)
-            for new_x in range(1, len(new_grid[0]) - 1)
-            if (new_grid[new_y][new_x] == 0 and
-                new_y % 2 != 0)  # Satisfies y % 2 != 0
+                           for new_x in range(1, len(new_grid[0]) - 1)
+                           if (new_grid[new_y][new_x] == 0 and
+                               new_y % 2 != 0)  # Satisfies y % 2 != 0
         ]
 
         if empty_cells:
@@ -111,8 +107,8 @@ def generate_neighbor(grid):
     # Recalculate the number of intersections
     intersections = [
         (y, x) for y in range(1, len(new_grid) - 1)
-        for x in range(1, len(new_grid[0]) - 1)
-        if new_grid[y][x] == 3
+               for x in range(1, len(new_grid[0]) - 1)
+               if new_grid[y][x] == 3
     ]
 
     current_intersections = len(intersections)
@@ -121,8 +117,8 @@ def generate_neighbor(grid):
     if current_intersections < target_intersections:
         empty_cells = [
             (new_y, new_x) for new_y in range(1, len(new_grid) - 1)
-            for new_x in range(1, len(new_grid[0]) - 1)
-            if new_grid[new_y][new_x] == 0
+                           for new_x in range(1, len(new_grid[0]) - 1)
+                           if new_grid[new_y][new_x] == 0
         ]
         while current_intersections < target_intersections and empty_cells:
             new_y, new_x = random.choice(empty_cells)
@@ -139,6 +135,7 @@ def generate_neighbor(grid):
             current_intersections -= 1
 
     return new_grid
+
 
 
 def best_path_retention(grid, new_grid, paths, new_paths):
@@ -161,15 +158,15 @@ def best_path_retention(grid, new_grid, paths, new_paths):
         list[list[int]]: The merged grid with updated intersections based on the best paths.
     """
     # Initialize merged grid as a deep copy of the old grid
-    old_paths_dict = {}
+    old_paths_dict= {}
     for path in paths:
         old_paths_dict[path[0][0]] = path
     new_paths_dict = {}
     for path in new_paths:
         new_paths_dict[path[0][0]] = path
     merged_grid = deepcopy(grid)
-    for i in range(1, len(merged_grid)-1):
-        for j in range(1, len(merged_grid[0])-1):
+    for i in range(1,len(merged_grid)-1):
+        for j in range(1,len(merged_grid[0])-1):
             if merged_grid[i][j] == 3:
                 merged_grid[i][j] = 0
     # Replace all 3s in merged grid with 0s
@@ -178,7 +175,7 @@ def best_path_retention(grid, new_grid, paths, new_paths):
     new_fitness_scores = calculate_fitness(new_grid, new_paths)
     # print('current_fitness_scores:', current_fitness_scores)
     # print('new_fitness_scores:', new_fitness_scores)
-
+    
     # Dictionary to store selected paths and grids
     selected_config = {}
 
@@ -186,11 +183,11 @@ def best_path_retention(grid, new_grid, paths, new_paths):
     for building, old_path in old_paths_dict.items():
         # Get the corresponding new path
         new_path = new_paths_dict.get(building, None)
-
+        
         # Calculate fitness for old and new paths
         old_fitness = current_fitness_scores.get(building, float('inf'))
         new_fitness = new_fitness_scores.get(building, float('inf'))
-
+        
         # Compare fitness scores and update the selected configuration
         if old_fitness <= new_fitness:
             selected_config[building] = (grid, old_path)
@@ -203,5 +200,5 @@ def best_path_retention(grid, new_grid, paths, new_paths):
             x, y = coord
             # Use the value from the selected grid at the given coordinate
             merged_grid[x][y] = selected_grid[x][y]
-
+  
     return merged_grid
