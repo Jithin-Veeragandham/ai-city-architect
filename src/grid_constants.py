@@ -11,4 +11,4 @@ NUM_BUILDINGS = 18
 NUM_EMERGENCY_SERVICES = 4
 
 # The directory path where the visualizations and results of the city grid simulations will be saved.
-RES_DIR = rf"C:\Users\jithi\OneDrive\Desktop\VSCode\project py files\ai-city-architect\res"
+RES_DIR = rf""
