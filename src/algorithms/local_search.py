@@ -33,7 +33,7 @@ def hill_climbing(grid, max_iterations=200):
 
     dir_path = os.path.join(RES_DIR, "hill_climbing_" + datetime.now().strftime("%Y-%m-%d_%H-%M-%S"))
     os.mkdir(dir_path)
-    save_city_grid(grid, current_paths, dir_path, "hill_climbing_initial.png")
+    save_city_grid(grid, current_paths, dir_path,current_score, "hill_climbing_initial.png")
 
     for _ in range(max_iterations):
         print(f"Iteration {_}")
@@ -53,7 +53,7 @@ def hill_climbing(grid, max_iterations=200):
             current_grid = new_grid
             current_score = new_score
             current_paths = new_paths
-            save_city_grid(new_grid, new_paths, dir_path, f"iter{_}_cost_{current_score}.png")
+            save_city_grid(new_grid, new_paths, dir_path,current_score, f"iter{_}_cost_{current_score}.png")
 
         # Optionally print progress
         # print(f"Iteration {_}: Current Score = {current_score}")

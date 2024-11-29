@@ -24,7 +24,7 @@ def load_images(cell_size):
     return images
 
 
-def save_city_grid(grid, paths, dir_name, output_file_name):
+def save_city_grid(grid, paths, dir_name,current_score, output_file_name):
     """
     Visualizes a city grid and its shortest paths using Pillow and saves the visualization as an image.
 
@@ -115,6 +115,15 @@ def save_city_grid(grid, paths, dir_name, output_file_name):
                 outline=path_color,  # Border color
                 width=path_thickness  # Border thickness
             )
+    score_text = f" Cost: {current_score}"
+    text_position = (10, 10)  # Top-left corner
+    text_color = (255, 0, 0)  # White
+    font_size = 40  # Adjust this value for larger or smaller text
+    font_path = "arial.ttf"  # Replace with the path to a .ttf font file on your system
+    font = ImageFont.truetype(font_path, font_size)
+
+    # Draw the text with the specified font
+    draw.text(text_position, score_text, fill=text_color, font=font)
 
     # Ensure the output directory exists
     os.makedirs(dir_name, exist_ok=True)
@@ -124,7 +133,7 @@ def save_city_grid(grid, paths, dir_name, output_file_name):
     img.save(full_path)
     # print(f"City grid visualization saved as {full_path}")
 
-def save_city_grid_with_annotation(grid, shortest_paths, output_dir, filename, fitness, text_color="red", text_scale=1):
+def save_city_grid_with_annotation(grid, shortest_paths, output_dir, filename, fitness, text_color="red", text_scale=2):
     """
     Saves a city grid with paths and annotations in one step.
 
@@ -147,7 +156,7 @@ def save_city_grid_with_annotation(grid, shortest_paths, output_dir, filename, f
         draw = ImageDraw.Draw(img)
 
         # Load a font with adjustable size
-        font_size = 175 * text_scale  # Adjust base size
+        font_size = 75 * text_scale  # Adjust base size
         try:
             font = ImageFont.truetype("arial.ttf", font_size)
         except IOError:
