@@ -149,7 +149,7 @@ def save_city_grid_with_annotation(grid, shortest_paths, output_dir, filename, f
     # Visualize the grid and paths
     grid_image_path = os.path.join(output_dir, filename)
     # Generates a base grid visualization
-    save_city_grid(grid, shortest_paths, output_dir, filename)
+    save_city_grid(grid, shortest_paths, output_dir,fitness, filename)
 
     # Open the image for annotation
     with Image.open(grid_image_path) as img:

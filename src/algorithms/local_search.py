@@ -11,7 +11,7 @@ from grid_constants import RES_DIR
 
 def local_search_algorithm(grid, max_iterations=200):
     """
-    Implements the hill climbing algorithm to optimize the placement of intersections in a city grid.
+    Implements the hill climbing algorithm to optimize the placement of  intersections in a city grid.
 
     Steps:
     1. Iteratively generates neighboring configurations and evaluates their fitness scores.
