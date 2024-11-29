@@ -98,7 +98,8 @@ def genetic_algorithm(population_size, generations, mutation_rate, initial_grid)
     population = initialize_population(population_size, initial_grid)
     best_fitness = float('inf')  # Initialize with a very high fitness score
 
-    dir_path = os.path.join(RES_DIR, "genetic_algorithm_" + datetime.now().strftime("%Y-%m-%d_%H-%M-%S"))
+    dir_path = os.path.join(
+        RES_DIR, "genetic_algorithm_" + datetime.now().strftime("%Y-%m-%d_%H-%M-%S"))
     os.mkdir(dir_path)
     for generation in range(generations):
         fitness_scores = []
@@ -139,13 +140,39 @@ def genetic_algorithm(population_size, generations, mutation_rate, initial_grid)
             parent1, parent2 = random.sample(selected_population, 2)
             parent1_paths = find_all_shortest_paths(parent1)
             parent2_paths = find_all_shortest_paths(parent2)
+            parent1_fitness = calculate_fitness(parent1, parent1_paths)
+            parent2_fitness = calculate_fitness(parent2, parent2_paths)
+            parent1_avg_fitness = sum(
+                parent1_fitness.values()) / len(parent1_fitness)
+            parent2_avg_fitness = sum(
+                parent2_fitness.values()) / len(parent2_fitness)
             child = best_path_retention(
                 parent1, parent2, parent1_paths, parent2_paths)
-            new_population.append(child)
+            child_paths = find_all_shortest_paths(child)
+            # child_paths = find_all_shortest_paths(child)
+            child_fitness = calculate_fitness(child, child_paths)
+            child_avg_fitness = sum(
+                child_fitness.values()) / len(child_fitness)
+            # new_population.append(child)
+            # Compare fitness and decide whether to include a parent or the child
+            if parent1_avg_fitness < child_avg_fitness or parent2_avg_fitness < child_avg_fitness:
+                # Add the better parent
+                if parent1_avg_fitness < parent2_avg_fitness:
+                    new_population.append(parent1)
+                else:
+                    new_population.append(parent2)
+            else:
+                # Add the child
+                new_population.append(child)
 
         # Apply mutation
-        population = [generate_neighbor(grid) if random.random() <
-                      mutation_rate else grid for grid in new_population]
+        # population = [generate_neighbor(grid) if random.random() <
+        #               mutation_rate else grid for grid in new_population]
+        population = [
+            generate_neighbor(grid) if (
+                grid not in selected_population and random.random() < mutation_rate) else grid
+            for grid in new_population
+        ]
 
         # Log the best fitness of the generation
         print(
@@ -153,5 +180,5 @@ def genetic_algorithm(population_size, generations, mutation_rate, initial_grid)
         best_fitness = current_best_fitness
 
     short_paths = find_all_shortest_paths(current_best_grid)
-    
+
     return current_best_grid, short_paths, best_fitness
