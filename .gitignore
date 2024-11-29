@@ -4,3 +4,4 @@ src/utils/__pycache__/*
 src/visuals/__pycache__/*
 .DS_Store
 res/
+src/grid_constants.py
