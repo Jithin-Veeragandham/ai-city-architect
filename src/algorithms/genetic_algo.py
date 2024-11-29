@@ -40,7 +40,7 @@ def select_best_grids(population, fitness_scores, num_selected):
     Steps:
     1. Computes the average fitness score for each grid in the population.
     2. Sorts the grids in ascending order of average fitness scores (lower is better).
-    3. Selects the top `num_selected` grids for the next generation.
+    3. Selects the top num_selected grids for the next generation.
 
     Parameters:
         population (list[list[list[int]]]): The current population of grids.
@@ -123,7 +123,7 @@ def genetic_algorithm(population_size, generations, mutation_rate, initial_grid)
         for i, grid in enumerate(selected_population):
             shortest_paths = find_all_shortest_paths(grid)
             annotated_path = save_city_grid_with_annotation(
-                grid, shortest_paths, dir_path, f"generation_{generation+1}_grid_{i+1}.png", avg_fitness[i]
+                grid, shortest_paths, dir_path, f"generation_{generation+1}grid{i+1}.png", avg_fitness[i]
             )
             image_paths.append(annotated_path)
 
@@ -136,42 +136,25 @@ def genetic_algorithm(population_size, generations, mutation_rate, initial_grid)
 
         # Create a new population with the best grid explicitly included
         new_population = []  # Start with the best grid
+
         while len(new_population) < population_size:
             parent1, parent2 = random.sample(selected_population, 2)
+
             parent1_paths = find_all_shortest_paths(parent1)
+
             parent2_paths = find_all_shortest_paths(parent2)
-            parent1_fitness = calculate_fitness(parent1, parent1_paths)
-            parent2_fitness = calculate_fitness(parent2, parent2_paths)
-            parent1_avg_fitness = sum(
-                parent1_fitness.values()) / len(parent1_fitness)
-            parent2_avg_fitness = sum(
-                parent2_fitness.values()) / len(parent2_fitness)
+
             child = best_path_retention(
                 parent1, parent2, parent1_paths, parent2_paths)
-            child_paths = find_all_shortest_paths(child)
-            # child_paths = find_all_shortest_paths(child)
-            child_fitness = calculate_fitness(child, child_paths)
-            child_avg_fitness = sum(
-                child_fitness.values()) / len(child_fitness)
-            # new_population.append(child)
-            # Compare fitness and decide whether to include a parent or the child
-            if parent1_avg_fitness < child_avg_fitness or parent2_avg_fitness < child_avg_fitness:
-                # Add the better parent
-                if parent1_avg_fitness < parent2_avg_fitness:
-                    new_population.append(parent1)
-                else:
-                    new_population.append(parent2)
-            else:
-                # Add the child
-                new_population.append(child)
 
-        # Apply mutation
-        # population = [generate_neighbor(grid) if random.random() <
-        #               mutation_rate else grid for grid in new_population]
+            new_population.append(child)
+
+        combined_population = selected_population + new_population
+
         population = [
             generate_neighbor(grid) if (
                 grid not in selected_population and random.random() < mutation_rate) else grid
-            for grid in new_population
+            for grid in combined_population
         ]
 
         # Log the best fitness of the generation
