@@ -1,7 +1,7 @@
 
-# UrbanAItect: A City Grid Optimization Project
+# : AI based City Layout Optimization Project
 
-UrbanAItect is a Python project that leverages genetic algorithms and local search methods to optimize city grids. It uses heuristics to strategically place buildings, emergency services, and intersections to minimize travel distances while adhering to constraints.
+AI based City Layout Optimization Project is a Python project that leverages genetic algorithms and local search methods to optimize city grids. It uses heuristics to strategically place buildings, emergency services, and intersections to minimize travel distances while adhering to constraints.
 
 ## Directory Structure
 
