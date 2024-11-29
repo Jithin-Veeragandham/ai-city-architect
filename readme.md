@@ -65,3 +65,13 @@ After running the script, visualizations and result files will be saved in the d
 - Extend the visualization module for better interaction and analysis.
 
 Feel free to contribute by opening a pull request or reporting issues!
+
+## Collaborators
+
+The following individuals contributed to the development of this project:
+
+1. **Shrey Chirag Shah**
+2. **Jithin Veeragandham**
+3. **Sahil Subodh Bane**
+4. **Yash Hareshbhai Beladiya**
+5. **Yuhui Sun**

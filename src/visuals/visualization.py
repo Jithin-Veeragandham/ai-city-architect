@@ -1,5 +1,6 @@
 from PIL import Image, ImageDraw, ImageFont
 import os
+from grid_constants import RES_DIR
 
 
 def load_images(cell_size):
@@ -16,12 +17,8 @@ def load_images(cell_size):
     """
     # print("Loading images...")
     images = {
-        1: Image.open(rf"/Users/shreycshah/Desktop/Coursework/Fall24/CS5100/Project/UrbanAItect/res//building.jpg").resize(
-            (cell_size, cell_size)
-        ),  # Building image (JPEG format)
-        2: Image.open(rf"/Users/shreycshah/Desktop/Coursework/Fall24/CS5100/Project/UrbanAItect/res//emergency.png").resize(
-            (cell_size, cell_size)
-        ),  # Emergency service image (PNG format)
+        1: Image.open(os.path.join(RES_DIR,"building.jpg")).resize((cell_size, cell_size)),  # Building image (JPEG format)
+        2: Image.open(os.path.join(RES_DIR,"emergency.png")).resize((cell_size, cell_size)),  # Emergency service image (PNG format)
     }
     # print("Images loaded and scaled.")
     return images

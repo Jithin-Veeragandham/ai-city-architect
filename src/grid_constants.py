@@ -11,4 +11,4 @@ NUM_BUILDINGS = 15
 NUM_EMERGENCY_SERVICES = 6 
 
 # The directory path where the visualizations and results of the city grid simulations will be saved.
-RES_DIR = rf""
+RES_DIR = rf"/Users/shreycshah/Desktop/Coursework/Fall24/CS5100/Project/UrbanAItect/res"

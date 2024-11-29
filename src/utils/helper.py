@@ -1,6 +1,6 @@
 from copy import deepcopy
 import random
-from algorithms.objective import calculate_fitness
+from algorithms.cost_function import calculate_fitness
 
 def manhattan_distance(node1, node2):
     """

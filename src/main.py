@@ -6,10 +6,11 @@ def main():
     initial_grid = generate_city_grid_with_only_bordering_intersections()
     
     best_grid, shortest_paths, local_cost = hill_climbing(initial_grid, max_iterations=100)
-    print("Final cost after hill climbing: ", local_cost)
 
     optimized_grid, short_paths, genetic_cost = genetic_algorithm( population_size=10, generations=10, 
-                                                                  mutation_rate=0.2, initial_grid=initial_grid)
+                                                                    mutation_rate=0.2, initial_grid=initial_grid)
+    
+    print("Final cost after hill climbing: ", local_cost)
     print("Final cost after genetic algorithm: ", genetic_cost)
     
 

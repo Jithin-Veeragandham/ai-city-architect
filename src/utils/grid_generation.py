@@ -30,9 +30,9 @@ def generate_city_grid_with_only_bordering_intersections():
     width = GRID_WIDTH
     height = GRID_HEIGHT
 
-    print(
-        f"Generating grid with {num_buildings} buildings and {num_emergency_services} emergency services..."
-    )
+    # print(
+    #     f"Generating grid with {num_buildings} buildings and {num_emergency_services} emergency services..."
+    # )
     total_cells = width * height
     remaining_cells = total_cells - num_buildings - num_emergency_services
 
@@ -79,9 +79,9 @@ def generate_city_grid_with_only_bordering_intersections():
         )  # Add intersection columns to the left and right of each row
     new_grid.append([3] * width)  # Bottom row of intersections
 
-    print("Grid generated with only intersections in the border:")
-    for row in new_grid:
-        print(row)
+    # print("Grid generated with only intersections in the border:")
+    # for row in new_grid:
+    #     print(row)
 
     return new_grid
 
@@ -110,8 +110,8 @@ def place_intersections_in_every_column_randomly(grid):
             selected_row = random.choice(possible_rows)
             grid[selected_row][col] = 3  # Place intersection (3) at the selected position
 
-    print("Grid generated after placing intersections in each column randomly:")
-    for row in grid:
-        print(row)
+    # print("Grid generated after placing intersections in each column randomly:")
+    # for row in grid:
+    #     print(row)
 
     return grid

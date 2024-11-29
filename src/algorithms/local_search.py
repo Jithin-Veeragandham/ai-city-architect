@@ -3,7 +3,7 @@ from copy import deepcopy
 from datetime import datetime
 from algorithms.a_star_algo import find_all_shortest_paths
 from utils.helper import generate_neighbor, best_path_retention
-from algorithms.objective import calculate_fitness
+from algorithms.cost_function import calculate_fitness
 from visuals.visualization import save_city_grid
 from utils.grid_generation import place_intersections_in_every_column_randomly
 from grid_constants import RES_DIR

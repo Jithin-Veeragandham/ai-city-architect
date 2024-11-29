@@ -6,7 +6,7 @@ from algorithms.a_star_algo import find_all_shortest_paths
 from utils.helper import generate_neighbor, best_path_retention
 from utils.grid_generation import place_intersections_in_every_column_randomly
 from visuals.visualization import save_city_grid_with_annotation, combine_images, remove_images_by_prefix
-from algorithms.objective import calculate_fitness
+from algorithms.cost_function import calculate_fitness
 from grid_constants import RES_DIR
 
 
@@ -29,7 +29,7 @@ def initialize_population(size, initial_grid):
             grid)
         population.append(grid_with_intersections)
 
-    print(f"Initialized population of size {size}.")
+    # print(f"Initialized population of size {size}.")
     return population
 
 
