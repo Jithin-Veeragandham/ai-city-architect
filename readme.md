@@ -60,8 +60,9 @@ After running the script, visualizations and result files will be saved in the d
 
 ## Future Enhancements
 
-- Add support for dynamic grid resizing.
+- Add more parameters to optimize like walkability in the city, e.t.c
 - Improve the fitness evaluation by integrating real-world traffic or population data.
+- Improve local search by adding options to get out of local optima.
 - Extend the visualization module for better interaction and analysis.
 
 Feel free to contribute by opening a pull request or reporting issues!
