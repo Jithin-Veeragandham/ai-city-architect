@@ -9,7 +9,7 @@ from utils.grid_generation import place_intersections_in_every_column_randomly
 from grid_constants import RES_DIR
 
 
-def hill_climbing(grid, max_iterations=200):
+def local_search_algorithm(grid, max_iterations=200):
     """
     Implements the hill climbing algorithm to optimize the placement of intersections in a city grid.
 
