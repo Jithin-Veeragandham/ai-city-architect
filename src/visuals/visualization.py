@@ -1,4 +1,4 @@
-from PIL import Image, ImageDraw
+from PIL import Image, ImageDraw, ImageFont
 import os
 
 
@@ -126,3 +126,100 @@ def save_city_grid(grid, paths, dir_name, output_file_name):
     full_path = os.path.join(dir_name, output_file_name)
     img.save(full_path)
     # print(f"City grid visualization saved as {full_path}")
+
+def save_city_grid_with_annotation(grid, shortest_paths, output_dir, filename, fitness, text_color="red", text_scale=1):
+    """
+    Saves a city grid with paths and annotations in one step.
+
+    Parameters:
+    - grid: The grid to save.
+    - shortest_paths: Paths to overlay on the grid.
+    - output_dir: Directory to save the output.
+    - filename: Name of the file.
+    - fitness: The fitness score to annotate.
+    - text_color: Color of the annotation text.
+    - text_scale: Scale factor for the text size.
+    """
+    # Visualize the grid and paths
+    grid_image_path = os.path.join(output_dir, filename)
+    # Generates a base grid visualization
+    save_city_grid(grid, shortest_paths, output_dir, filename)
+
+    # Open the image for annotation
+    with Image.open(grid_image_path) as img:
+        draw = ImageDraw.Draw(img)
+
+        # Load a font with adjustable size
+        font_size = 175 * text_scale  # Adjust base size
+        try:
+            font = ImageFont.truetype("arial.ttf", font_size)
+        except IOError:
+            # Fallback to default font if arial.ttf is unavailable
+            font = ImageFont.load_default()
+
+        text = f"Best Fitness: {fitness:.2f}"
+
+        # Annotate directly on the image
+        text_position = (10 * text_scale, 10 * text_scale)
+        draw.text(text_position, text, fill=text_color, font=font)
+
+        # Save the final annotated image
+        annotated_path = f"{grid_image_path}_fitness.png"
+        img.save(annotated_path)
+
+    # Optionally delete the unannotated version
+    os.remove(grid_image_path)  # Clean up the intermediate grid image
+    return annotated_path
+
+
+def combine_images(image_paths, output_path, images_per_row=3, spacing=10):
+    """
+    Combine multiple images into a single composite image with spacing between images.
+
+    Parameters:
+    - image_paths: List of image file paths.
+    - output_path: File path to save the combined image.
+    - images_per_row: Number of images per row.
+    - spacing: Space (in pixels) between images.
+    """
+    images = [Image.open(img_path) for img_path in image_paths]
+    widths, heights = zip(*(img.size for img in images))
+
+    # Determine grid size, including spacing
+    max_width = max(widths)
+    max_height = max(heights)
+    num_rows = (len(images) + images_per_row - 1) // images_per_row
+
+    # Calculate total canvas dimensions
+    canvas_width = images_per_row * max_width + (images_per_row - 1) * spacing
+    canvas_height = num_rows * max_height + (num_rows - 1) * spacing
+
+    # Create a blank canvas
+    composite = Image.new("RGB", (canvas_width, canvas_height), "white")
+
+    # Paste each image onto the canvas with spacing
+    for index, img in enumerate(images):
+        x = (index % images_per_row) * (max_width + spacing)
+        y = (index // images_per_row) * (max_height + spacing)
+        composite.paste(img, (x, y))
+
+    composite.save(output_path)
+
+
+def remove_images_by_prefix(directory, prefix):
+    """
+    Remove all files in the specified directory that start with the given prefix.
+
+    Parameters:
+    - directory: Path to the directory.
+    - prefix: The prefix to match files.
+    """
+    try:
+        for filename in os.listdir(directory):
+            if filename.startswith(prefix):
+                file_path = os.path.join(directory, filename)
+                if os.path.isfile(file_path):  # Ensure it's a file
+                    os.remove(file_path)
+                    # print(f"Deleted: {file_path}")
+    except Exception as e:
+        print(f"Error: {e}")

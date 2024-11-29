@@ -1,8 +1,8 @@
 import heapq
-from helper import *
+from utils.helper import manhattan_distance, is_intersection_and_above_below, is_cell_in_margins
 
 
-def get_neighbors(grid, node):
+def get_possible_directions(grid, node):
     """
     Given a grid and the current node, determines the valid neighboring nodes
     that can be moved to based on the grid's constraints and the direction of
@@ -103,7 +103,7 @@ def a_star(grid, start, goal):
         closed_list.add(current_node)
 
         # Get neighbors
-        neighbors = get_neighbors(grid, current_node)
+        neighbors = get_possible_directions(grid, current_node)
 
         for neighbor in neighbors:
             if neighbor in closed_list:

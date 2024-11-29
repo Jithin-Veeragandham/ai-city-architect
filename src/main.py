@@ -1,18 +1,17 @@
-from local_search import *
-from grid_generation import *
-from genetic_algo import *
-
+from utils.grid_generation import generate_city_grid_with_only_bordering_intersections
+from algorithms.local_search import hill_climbing
+from algorithms.genetic_algo import genetic_algorithm
 
 def main():
     initial_grid = generate_city_grid_with_only_bordering_intersections()
-    initial_grid_with_intersections = place_intersections_in_every_column_randomly(
-        initial_grid)
-    best_grid, shortest_paths = hill_climbing(
-        initial_grid_with_intersections, max_iterations=300)
+    
+    best_grid, shortest_paths, local_cost = hill_climbing(initial_grid, max_iterations=100)
+    print("Final cost after hill climbing: ", local_cost)
 
-    optimized_grid, short_paths = genetic_algorithm(
-        population_size=10, generations=50, mutation_rate=0.2, initial_grid=initial_grid)
-
+    optimized_grid, short_paths, genetic_cost = genetic_algorithm( population_size=10, generations=10, 
+                                                                  mutation_rate=0.2, initial_grid=initial_grid)
+    print("Final cost after genetic algorithm: ", genetic_cost)
+    
 
 if __name__ == "__main__":
     """

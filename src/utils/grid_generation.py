@@ -1,5 +1,5 @@
 import random
-from grid_constants import *
+from grid_constants import NUM_BUILDINGS, NUM_EMERGENCY_SERVICES, GRID_WIDTH, GRID_HEIGHT
 
 
 def generate_city_grid_with_only_bordering_intersections():

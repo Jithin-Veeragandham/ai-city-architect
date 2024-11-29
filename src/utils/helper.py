@@ -1,63 +1,61 @@
-from a_star_algo import *
-from objective import calculate_fitness
-from visualization import save_city_grid
-import os
-import copy
-import random
-from datetime import datetime
 from copy import deepcopy
+import random
+from algorithms.objective import calculate_fitness
 
-
-def hill_climbing(grid, max_iterations=200):
+def manhattan_distance(node1, node2):
     """
-    Implements the hill climbing algorithm to optimize the placement of intersections in a city grid.
-
-    Steps:
-    1. Iteratively generates neighboring configurations and evaluates their fitness scores.
-    2. Accepts a new configuration if it improves the fitness score.
-    3. Saves the grid visualization at each step for progress tracking.
+    Calculates the Manhattan distance between two nodes.
+    The Manhattan distance is the sum of the absolute differences between 
+    the x and y coordinates of two points, ignoring direction.
 
     Parameters:
-        grid (list[list[int]]): The initial city grid with intersections.
-        max_iterations (int): Maximum number of iterations for the algorithm.
+        node1 (tuple): The first node as ((x, y), direction).
+        node2 (tuple): The second node as ((x, y), direction).
 
     Returns:
-        tuple: The optimized grid and the corresponding paths after hill climbing.
+        int: The Manhattan distance between the two nodes.
     """
-    current_grid = copy.deepcopy(grid)
-    current_paths = find_all_shortest_paths(current_grid)
-    initial_fitness_scores = calculate_fitness(current_grid, current_paths)
-    current_score = sum(initial_fitness_scores.values()) / len(initial_fitness_scores)
+    # Extract coordinates from each node
+    (x1, y1), _ = node1  # node1 has (coordinates, direction)
+    (x2, y2), _ = node2  # node2 has (coordinates, direction)
+    return abs(x1 - x2) + abs(y1 - y2)
 
-    dir_path = os.path.join(rf"/Users/shreycshah/Desktop/Coursework/Fall24/CS5100/Project/UrbanAItect/res",
-                            datetime.now().strftime("%Y-%m-%d_%H-%M-%S"))
-    os.mkdir(dir_path)
-    save_city_grid(grid, current_paths, dir_path, "hill_climbing_initial.png")
 
-    for _ in range(max_iterations):
-        print(f"Iteration {_}")
-        new_grid = generate_neighbor(current_grid)
-        new_paths = find_all_shortest_paths(new_grid)
-        fitness_scores = calculate_fitness(new_grid, new_paths)
-        new_grid = best_path_retention(current_grid, new_grid, current_paths, new_paths)
-        new_paths = find_all_shortest_paths(new_grid)
-        fitness_scores = calculate_fitness(new_grid, new_paths)
+def is_intersection_and_above_below(current,grid,goal):
+   """
+    Determines if the current cell is an intersection and is directly 
+    above or below the goal cell.
 
-        new_score = sum(fitness_scores.values()) / len(initial_fitness_scores)
+    Parameters:
+        current (tuple): The current cell's coordinates as (x, y).
+        grid (list[list[int]]): The 2D grid representing the environment.
+        goal (tuple): The goal cell's coordinates as (x, y).
 
-        # If the new configuration is better, accept it
-        if new_score < current_score:
-            print(f"Accepted new configuration with score {new_score} at iteration {_}")
+    Returns:
+        bool: True if the current cell is an intersection (value 3) and is 
+              directly above or below the goal cell, False otherwise.
+    """
+   return (grid[current[1]][current[0]]==3  and 
+           ((current[1] == goal[1] - 1) or (current[1] == goal[1] + 1)))
 
-            current_grid = new_grid
-            current_score = new_score
-            current_paths = new_paths
-            save_city_grid(new_grid, new_paths, dir_path, f"iter{_}_cost_{current_score}.png")
+def is_cell_in_margins(grid, cell):
+    """
+    Checks whether a cell is located in the margins (edges) of the grid.
 
-        # Optionally print progress
-        # print(f"Iteration {_}: Current Score = {current_score}")
+    Parameters:
+        grid (list[list[int]]): The 2D grid as a list of lists.
+        cell (tuple): The cell to check, represented as (row, column).
 
-    return current_grid, current_paths
+    Returns:
+        bool: True if the cell is located in the margins (top row, bottom row, 
+              left column, or right column), False otherwise.
+    """
+    rows = len(grid)
+    cols = len(grid[0])
+    row, col = cell
+
+    # Check if the cell is in the margins
+    return row == 0 or row == rows - 1 or col == 0 or col == cols - 1
 
 
 def generate_neighbor(grid):
@@ -76,7 +74,7 @@ def generate_neighbor(grid):
     Returns:
         list[list[int]]: A new grid configuration with adjusted intersections.
     """
-    new_grid = copy.deepcopy(grid)
+    new_grid = deepcopy(grid)
     target_intersections = len(new_grid) + 1
 
     # Find all intersections
@@ -135,7 +133,6 @@ def generate_neighbor(grid):
             current_intersections -= 1
 
     return new_grid
-
 
 
 def best_path_retention(grid, new_grid, paths, new_paths):
