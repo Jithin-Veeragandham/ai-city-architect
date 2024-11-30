@@ -2,7 +2,7 @@ from utils.grid_generation import generate_city_grid_with_only_bordering_interse
 from algorithms.local_search import local_search_algorithm
 from algorithms.genetic_algo import genetic_algorithm
 import pandas as pd
-import os
+import os 
 from grid_constants import RES_DIR
 
 
@@ -10,7 +10,7 @@ def main():
     local_search_scores = []
     genetic_algorithm_scores = []
     for _ in range(50):
-        print("******************* Combat: ", _)
+        print("**************** Combat: ", _)
         initial_grid = generate_city_grid_with_only_bordering_intersections()
         
         best_grid, shortest_paths, local_cost = local_search_algorithm(initial_grid, max_iterations=400)
