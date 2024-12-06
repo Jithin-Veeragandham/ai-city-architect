@@ -1,6 +1,7 @@
 from utils.grid_generation import generate_city_grid_with_only_bordering_intersections
 from algorithms.local_search import local_search_algorithm
 from algorithms.genetic_algo import genetic_algorithm
+from visuals.project_demo import run_visualizations
 import pandas as pd
 import os 
 from grid_constants import RES_DIR
@@ -35,6 +36,8 @@ def main():
     print("Number of iterations where Genetic Algorithm outperformed Local Search:", genetic_better)
 
     comparision_df.to_csv(os.path.join(RES_DIR,"comparision.csv"), index=False)
+
+    run_visualizations([best_grid, optimized_grid], [shortest_paths, short_paths], ["Local Search", "Genetic Algorithm"])
     
 
 if __name__ == "__main__":
