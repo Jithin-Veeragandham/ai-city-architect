@@ -3,6 +3,13 @@
 
 AI based City Layout Optimization Project is a Python project that leverages genetic algorithms and local search methods to optimize city grids. It uses heuristics to strategically place buildings, emergency services, and intersections to minimize travel distances while adhering to constraints.
 
+# Sample Outputs
+
+Local Search:
+![local](https://github.com/user-attachments/assets/ad8932a4-ebdd-4f61-a576-2f60b27b8099)
+
+Genetic Algorithms:
+
 ## Directory Structure
 
 ```
