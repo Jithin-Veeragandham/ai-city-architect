@@ -9,6 +9,7 @@ Local Search:
 ![local](https://github.com/user-attachments/assets/ad8932a4-ebdd-4f61-a576-2f60b27b8099)
 
 Genetic Algorithms:
+![gene-ezgif com-optimize(1)](https://github.com/user-attachments/assets/7d9d891e-615d-41c8-a96f-df4b7573dfe2)
 
 ## Directory Structure
 
